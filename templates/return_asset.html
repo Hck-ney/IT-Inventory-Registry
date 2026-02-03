@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center;">
+
+    <div style="background: white; width: 100%; max-width: 450px; padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #eee;">
+
+        <div style="text-align: center; margin-bottom: 25px;">
+            <h2 style="color: #2c3e50; margin: 0; font-size: 22px;">📝 Assign this Asset to</h2>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <style>
+                /* Compact form styling */
+                p { margin-bottom: 12px; }
+                label { display: block; font-weight: 600; margin-bottom: 4px; color: #495057; font-size: 13px; }
+
+                input[type="text"], input[type="number"], input[type="email"], select, textarea {
+                    width: 100%;
+                    padding: 8px 10px;
+                    border: 1px solid #ced4da;
+                    border-radius: 6px;
+                    font-size: 14px;
+                    box-sizing: border-box;
+                }
+
+                input:focus, select:focus {
+                    outline: none;
+                    border-color: #007bff;
+                    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+                }
+            </style>
+
+            {{ form.as_p }}
+
+            <div style="margin-top: 25px; display: flex; gap: 10px;">
+                <button type="submit" style="flex: 2; background: #28a745; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                    Save
+                </button>
+                <a href="javascript:history.back()" style="flex: 1; text-align: center; text-decoration: none; background: #f8f9fa; color: #6c757d; border: 1px solid #ddd; padding: 10px; border-radius: 6px; font-weight: 600; font-size: 14px;">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

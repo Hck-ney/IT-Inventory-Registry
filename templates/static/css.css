@@ -1,0 +1,21 @@
+.head{
+    border: black 1px solid;
+    height: 10%;
+}
+.side-panel{
+    border: black 1px solid;
+    display: inline-block;
+    width: 20%;
+    height: 650px;
+}
+.list-view{
+    border: black 1px solid ;
+    display: inline-block;
+    width: 79%;
+    height: 650px;
+}
+.list-box{
+    display: inline-block;
+    border: black 1px solid;
+    height: 150px;
+}

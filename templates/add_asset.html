@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; min-height: 100vh; padding: 40px 20px; display: flex; justify-content: center;">
+
+    <div style="background: white; width: 100%; max-width: 500px; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #eee;">
+
+        <div style="text-align: center; margin-bottom: 30px;">
+            <span style="font-size: 40px;">➕</span>
+            <h2 style="color: #2c3e50; margin: 10px 0 5px 0;">Add New Asset</h2>
+            <p style="color: #6c757d; font-size: 14px;">Enter the details to register a new item in the inventory.</p>
+        </div>
+
+        <form action="{% url 'add_asset' %}" method="post">
+            {% csrf_token %}
+
+            <style>
+                /* Styling the Django-generated form fields */
+                p { margin-bottom: 15px; }
+                label { display: block; font-weight: 600; margin-bottom: 5px; color: #495057; font-size: 14px; }
+                input[type="text"], input[type="number"], select, textarea {
+                    width: 100%;
+                    padding: 10px 12px;
+                    border: 1px solid #ced4da;
+                    border-radius: 6px;
+                    font-size: 14px;
+                    box-sizing: border-box; /* Ensures padding doesn't break width */
+                }
+                input:focus, select:focus {
+                    outline: none;
+                    border-color: #007bff;
+                    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+                }
+            </style>
+
+            {{ form.as_p }}
+
+            <div style="margin-top: 30px; display: flex; gap: 10px;">
+                <button type="submit" style="flex: 2; background: #007bff; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.2s;">
+                    Save Asset
+                </button>
+                <a href="{% url 'list_view' %}" style="flex: 1; text-align: center; text-decoration: none; background: #f8f9fa; color: #6c757d; border: 1px solid #ddd; padding: 12px; border-radius: 6px; font-weight: 600;">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

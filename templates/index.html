@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; min-height: 100vh; padding: 20px;">
+
+    {% include 'navbar.html' %}
+    <div style="background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid #eee;">
+    <form method="GET" action="{% url 'list_view' %}" style="display: flex; gap: 10px; margin: 0;">
+        <input type="text" name="q" label = "Search for an asset here..." placeholder="Search by Asset Name or ID..." value="{{ request.GET.q }}" style="flex: 1; padding: 10px 15px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; outline: none;">
+        <button type="submit" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; white-space: nowrap;">🔍 Search</button>
+        {% if request.GET.q %}<a href="{% url 'list_view' %}" style="text-decoration: none; background: #f8f9fa; color: #6c757d; border: 1px solid #ddd; padding: 10px 15px; border-radius: 6px; font-weight: 600; font-size: 14px;">Clear</a>{% endif %}
+    </form>
+    </div>
+
+    <div style="display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap;">
+    <span style="align-self: center; font-size: 13px; font-weight: 700; color: #6c757d; text-transform: uppercase;">Filter Status:</span>
+
+    <a href="?q={{ request.GET.q }}"
+       style="text-decoration: none; padding: 6px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid #ddd;
+       {% if not request.GET.status %} background: #007bff; color: white; {% else %} background: white; color: #6c757d; {% endif %}">
+       All
+    </a>
+
+    <a href="?q={{ request.GET.q }}&status=AVAIL"
+       style="text-decoration: none; padding: 6px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid #ddd;
+       {% if request.GET.status == 'AVAIL' %} background: #28a745; color: white; {% else %} background: white; color: #6c757d; {% endif %}">
+       ✅ Available
+    </a>
+
+    <a href="?q={{ request.GET.q }}&status=BUSY"
+       style="text-decoration: none; padding: 6px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid #ddd;
+       {% if request.GET.status == 'BUSY' %} background: #ffc107; color: #856404; {% else %} background: white; color: #6c757d; {% endif %}">
+       👤 Assigned
+    </a>
+    
+    <a href="?q={{ request.GET.q }}&status=REPAIR" 
+   style="text-decoration: none; padding: 6px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid #ddd; 
+   {% if request.GET.status == 'REPAIR' %} background: #6c757d; color: white; {% else %} background: white; color: #6c757d; {% endif %}">
+   🛠️ Under Repair
+    </a>
+    </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px;">
+            {% for p in asset_list %}
+            <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.07); transition: transform 0.2s; border: 1px solid #eee;">
+
+                <div style="height: 160px; background: #e9ecef; display: flex; align-items: center; justify-content: center; color: #adb5bd;">
+                    <span style="font-size: 40px;">
+                        {% if p.category == 'LP' %}💻{% elif p.category == 'MONITOR' %}🖥️{% else %}🔧{% endif %}
+                    </span>
+                </div>
+
+                <div style="padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                        <h3 style="margin: 0; font-size: 18px;">
+                            <a href="{% url 'asset_details' p.pk %}" style="color: #007bff; text-decoration: none;">{{ p.name }}</a>
+                        </h3>
+                        <span style="padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase;
+                            {% if p.status == 'AVAIL' %} background: #d4edda; color: #155724; 
+                            {% elif p.status == 'BUSY' %} background: #fff3cd; color: #856404;
+                            {% elif p.status == 'REPAIR' %} background: #e9ecef; color: #495057; border: 1px solid #dee2e6;
+                            {% else %} background: #f8d7da; color: #721c24; {% endif %}">
+                            {{ p.get_status_display }}
+                        </span>
+                    </div>
+
+                    <p style="margin: 0; color: #6c757d; font-size: 14px;"><strong>Asset ID:</strong> {{ p.Asset_ID }}</p>
+                    <p style="margin: 5px 0; color: #6c757d; font-size: 14px;"><strong>Category:</strong> {{ p.get_category_display }}</p>
+
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #f0f0f0; font-size: 13px;">
+                        {% if p.assigned_to is null %}
+                            <span style="color: #495057;"><strong>Not Assigned</strong></span>
+                        {% else %}
+                            <span style="color: #495057;">👤 Assigned to: <strong>{{ p.current_user_name }}</strong></span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 50px; background: white; border-radius: 8px;">
+                <p style="color: #999;">The inventory is currently empty.</p>
+            </div>
+            {% endfor %}
+        </div>
+</div>
+{% endblock content %}

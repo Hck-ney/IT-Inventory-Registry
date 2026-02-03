@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
+
+    <div style="background: white; width: 100%; max-width: 500px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #eee; overflow: hidden;">
+
+        <div style="background: #2c3e50; padding: 20px; color: white; display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0; font-size: 20px;">{{ asset.name }}</h2>
+            <span style="padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; 
+    background: {% if asset.status == 'AVAIL' %}#2ecc71{% elif asset.status == 'BUSY' %}#f1c40f{% else %}#95a5a6{% endif %};">
+                {{ asset.get_status_display }}
+            </span>
+        </div>
+            
+        <div style="margin-top: 15px; border-top: 1px solid #f0f0f0; padding-top: 15px;">
+    
+</div>
+        <div style="padding: 20px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                <div>
+                    <small style="color: #888; display: block; text-transform: uppercase; font-size: 10px;">ID</small>
+                    <strong style="color: #333;">#{{ asset.Asset_ID }}</strong>
+                </div>
+                <div>
+                    <small style="color: #888; display: block; text-transform: uppercase; font-size: 10px;">Category</small>
+                    <strong style="color: #333;">{{ asset.get_category_display }}</strong>
+                </div>
+                <div style="grid-column: span 2;">
+                    <small style="color: #888; display: block; text-transform: uppercase; font-size: 10px;">Current Holder</small>
+                    <strong style="color: #333;">{{ asset.current_user_name }}</strong>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; width: 100%;">
+    {% if asset.status == 'REPAIR' %}
+        <button type="button" disabled
+           style="flex: 1; text-align: center; background: #bdc3c7; color: white; padding: 10px; border-radius: 6px; font-weight: 600; border: none; cursor: not-allowed; opacity: 0.7;">
+           🚫 Under Repair
+        </button>
+    {% else %}
+        {% if asset.assigned_to %}
+            <button type="button" onclick="document.getElementById('assignModal').style.display='flex'"
+               style="flex: 1; text-align: center; border: none; background: #008000; color: white; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer; white-space: nowrap;">
+               Update Holder
+            </button>
+        {% else %}
+            <button type="button" onclick="document.getElementById('assignModal').style.display='flex'"
+               style="flex: 1; text-align: center; border: none; background: #3498db; color: white; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer; white-space: nowrap;">
+               Assign
+            </button>
+        {% endif %}
+    {% endif %}
+
+    <a href="{% url 'list_view' %}"
+       style="flex: 1; text-align: center; text-decoration: none; background: #dc3545; color: white; padding: 10px; border-radius: 6px; font-weight: 600; white-space: nowrap;">
+       Close
+    </a>
+</div>
+        <div style="margin-top: 15px; border-top: 1px solid #f0f0f0; padding: 15px 20px 0 20px;">
+            <form method="post" style="margin: 0;">
+                {% csrf_token %}
+                <input type="hidden" name="toggle_repair" value="true">
+                {% if asset.status == 'REPAIR' %}
+                    <button type="submit" style="width: 100%; background: #2ecc71; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.2s;">
+                        🔧 Back to Service (Set Available)
+                    </button>
+                {% else %}
+                    <button type="submit" style="width: 100%; background: #95a5a6; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.2s;">
+                        🛠️ Mark as Under Repair
+                    </button>
+                {% endif %}
+            </form>
+        </div>
+        </div>
+    </div>
+
+    <div id="assignModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000;">
+        <div style="background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+            <h3 style="margin-top: 0; color: #2c3e50;">Select Employee</h3>
+            <p style="color: #666; font-size: 14px;">Who will be responsible for this {{ asset.name }}?</p>
+
+            <form action="{% url 'asset_details' asset.pk %}" method="post">
+                {% csrf_token %}
+                <select name="employee_id" required style="width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 20px; font-size: 14px;">
+                    <option value="" disabled selected>Choose from staff list...</option>
+                    {% for emp in employee_list %}
+                        <option value="{{ emp.pk }}">{{ emp.name }} ({{ emp.department }})</option>
+                    {% endfor %}
+                </select>
+
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" style="flex: 2; background: #2ecc71; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer;">Confirm Assignment</button>
+                    <button type="button" onclick="document.getElementById('assignModal').style.display='none'" style="flex: 1; background: #eee; border: none; padding: 10px; border-radius: 6px; cursor: pointer;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
