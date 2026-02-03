@@ -1,4 +1,4 @@
-# Asset-Lifecycle-Tracker 🚀
+# IT Inventory Registry 🚀
 
 A professional IT Inventory Management system built with **Django** and **PostgreSQL**. This application tracks the movement of company hardware from initial procurement through employee assignment, repair cycles, and final decommissioning.
 
