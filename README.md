@@ -1,5 +1,7 @@
 # IT Inventory Registry 🚀
 
+**🌐 Live Demo:** [https://it-inventory-registry.onrender.com](https://it-inventory-registry.onrender.com)
+
 A professional IT Inventory Management system built with **Django** and **PostgreSQL**. This application tracks the movement of company hardware from initial procurement through employee assignment, repair cycles, and final decommissioning.
 
 ## 🛠️ Key Functionalities
